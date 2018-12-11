@@ -1,0 +1,62 @@
+103.5 Criar, Monitorar e Encerrar Processos
+
+15. Preencha as informações abaixo com os dados de sua instância Linux:
+
+Total de Memória RAM utilizada (em MB):
+
+daniel@linux:~/aulas$ free -m
+              total       usada       livre    compart.  buff/cache  disponível
+Mem.:          1993         458         650           3         883        1363
+Swap:           953           0         953
+
+
+Load Average (Média dos Últimos 5 minutos): 
+
+daniel@linux:~/aulas$ top
+
+top - 23:59:22 up 9 min,  1 user,  load average: 0,16, 0,32, 0,26
+
+
+
+Quantidade de Processos em Execução: 
+
+ps -aux | wc -l
+
+PID dos 3 processos que estão utilizando mais Memória:
+
+daniel@linux:~/aulas$ ps -aux --sort -rss | head -n4
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root       711  1.7  5.3 412068 108496 tty7    Ssl+ nov28   0:19 /usr/lib/xorg/Xorg -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+
+daniel    3352  0.3  3.8 696340 79136 pts/0    Sl   nov28   0:02 gedit 103.5_exercicios.txt
+daniel    1469  0.0  2.7 753492 56056 ?        Sl   nov28   0:00 /usr/bin/python3 /usr/bin/blueman-applet
+
+PPID (Parent Process ID) dos 3 processos com maior tempo de Uso de CPU: 
+
+ps -la | grep PID apresenta a linha do PPID
+
+daniel@linux:~/aulas$ ps j 711
+ PPID   PID  PGID   SID TTY      TPGID STAT   UID   TIME COMMAND
+  672   711   711   711 tty7       711 Rsl+     0   0:29 /usr/lib/xorg/Xorg -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten 
+
+
+16. Crie um comando, que gere um arquivo chamado ~/LPI1/Exercicios/resultado-top.out, que contenha a saída do comando top, atualizado a cada 10 segundos, sendo executado indefinidamente até que o processo seja morto. O comando deve rodar em background.
+
+nohup top -b -d5 >> resultado-top.out &
+
+
+
+17. Envie um sinal de SIGKILL para o processo iniciado no exercício 16.
+
+daniel@linux:~/aulas$ ps -aux | grep "top -b -d5"
+daniel    3562  0.3  0.1  49468  3836 pts/0    S    00:21   0:00 top -b -d5
+daniel    3585  0.0  0.0  22000  1028 pts/0    S+   00:24   0:00 grep --color=auto top -b -d5
+
+kill -9 3562
+
+daniel@linux:~/aulas$ ps -aux | grep "top -b -d5"
+daniel    3587  0.0  0.0  22000  1108 pts/0    S+   00:24   0:00 grep --color=auto top -b -d5
+[2]+  Morto                   nohup top -b -d5 >> resultado-top.out
+
+
+
